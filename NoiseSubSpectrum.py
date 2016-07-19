@@ -8,7 +8,7 @@ class NoiseSubSpectrum(Spectrum):
     ''' represents a subspectrum given a spectrum.
         created on Sep 22, 2015, by Johnqiu,mht
     '''
-    bin_length = 0.1
+    bin_length = 0.5
     bin_area = 50 
     def __init__(self, precursor_peak, title, positionmz):
         Spectrum.__init__(self,precursor_peak,title)
