@@ -11,6 +11,7 @@ import random
 import sklearn.neighbors as skneighbour
 from sklearn.decomposition import PCA
 from mpl_toolkits.mplot3d import Axes3D
+import cPickle as cpickle
 
 class Classifying(object):
 
@@ -31,7 +32,21 @@ class Classifying(object):
            newDataSet.extend(random.sample(dataset,samplenum))
        newDataSet = np.array(newDataSet)
        newD = np.squeeze(newDataSet)
-       return np.mat(newD)
+       return np.array(newD)
+   
+   def shuffleData(self, dataset, labels):
+       """
+       np.random.shuffle(x)
+       np.random.permutation(x)
+       """
+       dim = np.shape(dataset)[1]
+       labels = np.array([labels]).T
+       newDataSet = np.hstack((dataset, labels))
+       newDS = np.random.permutation(newDataSet)
+       
+       newLabel = newDS[:,-1]
+       dataSet = newDS[:,:dim]
+       return dataSet,newLabel
     
    def KnnClassifying(self, k, weights, algorithm):
        """
@@ -58,11 +73,16 @@ class Classifying(object):
         estimator.fit(redudata[numTestVecs:m,:],labels[numTestVecs:m])
         classifierResult = estimator.predict(redudata[0:numTestVecs,:])
         lab = labels[0:numTestVecs]
-        errorCount = len(np.nonzero(lab==classifierResult)[0])    
+        errorCount = len(np.nonzero(lab!=classifierResult)[0])    
         correct = classifierResult[np.nonzero(lab==classifierResult)[0]]
+        count0 = len(np.nonzero(correct==0)[0])
+    
         print "the total error rate is: %f" % (errorCount/float(numTestVecs))
+        print "the total correct rate is: %f" % (1-errorCount/float(numTestVecs))
         print errorCount    
-        return correct
+        print count0
+        print float(count0) / len(correct)
+        return estimator
     
    def paintDataset(self, dataset, num, labelnum):
        # 数据集合并降维图      
@@ -78,13 +98,30 @@ class Classifying(object):
        begin = 0
        for i in range(1,labelnum):     
            end = begin + num
-           print end
+#           print end
            redud = redudata[begin:end]
-           print np.shape(redud)
+#           print np.shape(redud)
            plt.plot(redud[:, 0], redud[:, 1], 'k.', color = colorsets[i], markersize=2)
            begin = end
           
        plt.show()
+   
+   def paintResult(self, dataset, labels, labelnum):
+       # 数据结果图     
+       redudata = PCA(n_components=2).fit_transform(np.mat(dataset))
+#       print np.shape(redudata)
+       
+       plt.figure()
+       plt.clf()  # clear figure       
+       
+       colorset = np.linspace(0, 1, labelnum)
+       colorsets = plt.cm.Spectral(colorset)
+
+       for i in range(labelnum):
+           redud = redudata[np.nonzero(labels==i)[0]]
+           print np.shape(redud)
+           plt.plot(redud[:, 0], redud[:, 1], 'k.', color = colorsets[i], markersize=2)
+       plt.show() 
     
    def paint3DDataset(self, dataset, num, labelnum):
         # 数据集合并降维图      
@@ -115,12 +152,35 @@ class Classifying(object):
        ax.set_zlabel('z')    
        plt.show()
 
+   def cpStoreClassifier(self,filename, classifier):
+       """
+          store a classifier by cpickle
+          args:
+             filename
+             datas
+       """
+       with open(filename,'w') as fw:
+           cpickle.dump(classifier, fw)
+    
+   def cpLoadClassifier(self, filename):
+       """
+         generate a Classifier by cpickle
+         args:
+            filename
+              
+         return:
+            datas
+       """
+       with open(filename,'r') as fr:
+           classifier = cpickle.load(fr)
+           return classifier  
+
 if __name__=='__main__':
     classifying = Classifying()
     
     filename = "SubSpectrumData/"+"IonGroups_Int"
-    filename2 = "SubSpectrumData/"+"IonGroups_NoiInt"
-    filename3 = "SubSpectrumData/"+"IonGroups_DualInt"
+    filename2 = "SubSpectrumData/"+"IonGroups_DualInt"
+    filename3 = "SubSpectrumData/"+"IonGroups_NoiInt"
     filename4 = "SubSpectrumData/"+"IonGroups_AtypeInt"
     filename5 = "SubSpectrumData/"+"IonGroups_yNH3Int"
     filename6 = "SubSpectrumData/"+"IonGroups_yH2OInt"
@@ -148,12 +208,21 @@ if __name__=='__main__':
                               dataset9, dataset10, dataset11)
 #    classifying.paintDataset(newData,20000,11)  
 #    classifying.paint3DDataset(newData,10000,11)       
-    labels = []                          
-    for i in range(1,12):
-        labels += [i] * 20000 
-    labels = np.array(labels)
+    labels = [] 
+    for i in range(2):
+        labels += [0] * 20000                          
+    for i in range(9):
+        labels += [1] * 20000 
+    
+#    for i in range(11):
+#        labels += [i] * 20000
+
+    newD,newLabel = classifying.shuffleData(newData,labels)
+#    classifying.paintDataset(newD,20000,11) 
     estimator = classifying.KnnClassifying(30,'distance','ball_tree')
-    correct = classifying.classifyingTest(estimator, newData, labels)
+    newstimator = classifying.classifyingTest(estimator, newD,newLabel)
+    classifying.cpStoreClassifier("KnnClassifier",newstimator)
+#    classifying.paintResult(newD,labelreuslt,2) 
     
 #    hoRatio = 0.20      #hold out 10%
 #    m = newData.shape[0]
@@ -171,7 +240,7 @@ if __name__=='__main__':
 #    print "the total error rate is: %f" % (errorCount/float(numTestVecs))
 #    print errorCount        
     
-    
+#################################################test 2 twolabel#####################################
     
     
     

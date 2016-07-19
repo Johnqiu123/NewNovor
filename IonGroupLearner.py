@@ -323,70 +323,70 @@ if __name__=='__main__':
 ##    ionLists = iglearner.generateIonGroup(subspects, orginalpois)
 ###    
 ################################ Test 5#####################################
-#    filename1 = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_atype_intensity_20160120"
-#    subparser = SubSpectrumGenerator()
-#    atypesubspects = list(subparser.generateSubSpecfile(filename1,'intensity'))
-#  
-#    filename2 = "SubSpectrumData/"+"IonPostion"   
-#    iglearner = IonGroupLearner()
-#    orginalpois = iglearner.generateIonPoitionFile(filename2) # directly get original pois from file
+    filename1 = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_atype_intensity_20160120"
+    subparser = SubSpectrumGenerator()
+    atypesubspects = list(subparser.generateSubSpecfile(filename1,'intensity'))
+  
+    filename2 = "SubSpectrumData/"+"IonPostion"   
+    iglearner = IonGroupLearner()
+    orginalpois = iglearner.generateIonPoitionFile(filename2) # directly get original pois from file
+    
+    print orginalpois
+#    file_name = 'data/new_CHPP_LM3_RP3_2.mgf'
+#    parser = SpectrumParser()
+#    specs = list(parser.readSpectrum(file_name)) # orignal datas file
 #    
-#    print orginalpois
-##    file_name = 'data/new_CHPP_LM3_RP3_2.mgf'
-##    parser = SpectrumParser()
-##    specs = list(parser.readSpectrum(file_name)) # orignal datas file
-##    
-##    spectMaxInt = iglearner.generateMaxIntentity(specs)
+#    spectMaxInt = iglearner.generateMaxIntentity(specs)
+    
+    file_name3 = "SubSpectrumData/"+"SpectMaxInt"
+    spectMaxInt = iglearner.generateMaxIntentityFile(file_name3)
+    
+    ionLists = iglearner.generateIonGroup_Int(atypesubspects, orginalpois, spectMaxInt)
+    
+    
+    file_name4 = "SubSpectrumData/"+"IonGroups_AtypeInt"
+    wfile = write_file()
+#    wfile.writeSpectMaxInt(spectMaxInt)
+    
+#    iglearner.paintMaxInt(spectMaxInt)
+#    wfile.writeIonPoi(orginalpois)
+    wfile.writeIonGroups(ionLists, file_name4)
 #    
-#    file_name3 = "SubSpectrumData/"+"SpectMaxInt"
-#    spectMaxInt = iglearner.generateMaxIntentityFile(file_name3)
-#    
-#    ionLists = iglearner.generateIonGroup_Int(atypesubspects, orginalpois, spectMaxInt)
-#    
-#    
-#    file_name4 = "SubSpectrumData/"+"IonGroups_AtypeInt"
-#    wfile = write_file()
-##    wfile.writeSpectMaxInt(spectMaxInt)
-#    
-##    iglearner.paintMaxInt(spectMaxInt)
-##    wfile.writeIonPoi(orginalpois)
-#    wfile.writeIonGroups(ionLists, file_name4)
-##    
-###    ionLists = iglearner.generateIonGroup(subspects, orginalpois)
-##
+##    ionLists = iglearner.generateIonGroup(subspects, orginalpois)
+#
 ################################ Test 5#####################################
-    names=['y10+ ']
-    for name in names:
-        filename1 = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_"+name+"_intensity_20160120"
-        subparser = SubSpectrumGenerator()
-        atypesubspects = list(subparser.generateSubSpecfile(filename1,'intensity'))
-      
-        filename2 = "SubSpectrumData/"+"IonPostion"   
-        iglearner = IonGroupLearner()
-        orginalpois = iglearner.generateIonPoitionFile(filename2) # directly get original pois from file
-        
-    #    print orginalpois
-    #    file_name = 'data/new_CHPP_LM3_RP3_2.mgf' 
-    #    parser = SpectrumParser()
-    #    specs = list(parser.readSpectrum(file_name)) # orignal datas file
-    #    
-    #    spectMaxInt = iglearner.generateMaxIntentity(specs)
-        
-        file_name3 = "SubSpectrumData/"+"SpectMaxInt"
-        spectMaxInt = iglearner.generateMaxIntentityFile(file_name3)
-        
-        ionLists = iglearner.generateIonGroup_Int(atypesubspects, orginalpois, spectMaxInt)
-        
-        
-        file_name4 = "SubSpectrumData/"+"IonGroups_"+name+"Int"
-        wfile = write_file()
-    #    wfile.writeSpectMaxInt(spectMaxInt)
-        
-    #    iglearner.paintMaxInt(spectMaxInt)
-    #    wfile.writeIonPoi(orginalpois)
-        wfile.writeIonGroups(ionLists, file_name4)
-    #    
-    ##    ionLists = iglearner.generateIonGroup(subspects, orginalpois)
+#    names=['y10+ ']
+#    for name in names:
+#        filename1 = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_"+name+"_intensity_20160120"
+#        subparser = SubSpectrumGenerator()
+#        atypesubspects = list(subparser.generateSubSpecfile(filename1,'intensity'))
+#      
+#        filename2 = "SubSpectrumData/"+"IonPostion"   
+#        iglearner = IonGroupLearner()
+#        orginalpois = iglearner.generateIonPoitionFile(filename2) # directly get original pois from file
+#        
+#    #    print orginalpois
+#    #    file_name = 'data/new_CHPP_LM3_RP3_2.mgf' 
+#    #    parser = SpectrumParser()
+#    #    specs = list(parser.readSpectrum(file_name)) # orignal datas file
+#    #    
+#    #    spectMaxInt = iglearner.generateMaxIntentity(specs)
+#        
+#        file_name3 = "SubSpectrumData/"+"SpectMaxInt"
+#        spectMaxInt = iglearner.generateMaxIntentityFile(file_name3)
+#        
+#        ionLists = iglearner.generateIonGroup_Int(atypesubspects, orginalpois, spectMaxInt)
+#        
+#        
+#        file_name4 = "SubSpectrumData/"+"IonGroups_"+name+"Int"
+#        wfile = write_file()
+#    #    wfile.writeSpectMaxInt(spectMaxInt)
+#        
+#    #    iglearner.paintMaxInt(spectMaxInt)
+#    #    wfile.writeIonPoi(orginalpois)
+#        wfile.writeIonGroups(ionLists, file_name4)
+#    #    
+#    ##    ionLists = iglearner.generateIonGroup(subspects, orginalpois)
 ################################ Test 5#####################################   
 #    file_name1 = "SubSpectrumData/"+"IonGroups"
 #    file_name2 = "SubSpectrumData/"+"IonGroups_Int"
@@ -407,6 +407,65 @@ if __name__=='__main__':
 #        print ionLists2
 #    end = time.clock()
 #    print 'time consuming %s seconds.' % (end-start)
+################################ Test 5#####################################   
+#     filename = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_20151208"
+#    filename2 ="SubSpectrumData/"+"new_CHPP_LM3_RP3_2_Noise_20151208"
+#    subparser = SubSpectrumGenerator()
+#    subspects = list(subparser.generateSubSpecfile(filename))
+#    noisubspects = list(subparser.generateNoiSubfile(filename2)) # noise
+#
+#    subprocessor = SubSpectrumProcessor()
+#    allNtermbins,allCtermbins,allSubbins,subNum = subprocessor.calculateBins(subspects)
+#    allNOiNtermbins,allNoiCtermbins,allNoibins,noiNum = subprocessor.calculateBins(noisubspects)
+#    
+###     n-term
+#    NchiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allNtermbins,allNOiNtermbins)
+###     c-term
+#    CchiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allCtermbins,allNoiCtermbins)
+###     all
+#    chiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allSubbins,allNoibins)
+###    
+###    
+#    poiChiValues,poichiV = subprocessor.sortChiValues(chiValues)
+#    orginalpois = [poiChiValues[i][1] for i in range(len(poiChiValues))][0:21] # get top 10 chivalues
+##    randsubspects = subprocessor.generateRandSample(subspects,10)
+#
+##     file_name4 = "SubSpectrumData/"+"IonGroups"
+#    iglearner = IonGroupLearner()
+#    ionLists = iglearner.generateIonGroup(subspects, orginalpois)
+###    
+#    wfile = write_file()
+#    wfile.writeIonPoi(orginalpois)
+#    wfile.writeIonGroups(ionLists,file_name4)
+#    file_name = 'data/SimulateData' 
+#    parser = SpectrumParser()
+#    specs = list(parser.readSpectrum(file_name)) # orignal datas file
+#    
+#    filename0 = "SimulateData_Peak"
+#    iglearner = IonGroupLearner()
+#    wfile = write_file()
 
-
+#    spectMaxInt = iglearner.generateMaxIntentity(specs)
+#    wfile.writeSpectMaxInt(spectMaxInt, filename0)
+    
+    filename1 = "SubSpectrumData/"+"SimulateData_Peak_intensity"
+    subparser = SubSpectrumGenerator()
+    subspects = list(subparser.generateSubSpecfile(filename1,'intensity'))
+  
+    filename2 = "SubSpectrumData/"+"SimulateData_Peak_IonPostion"   
+    iglearner = IonGroupLearner()
+    orginalpois = iglearner.generateIonPoitionFile(filename2)
+    
+    file_name3 = "SubSpectrumData/"+"SimulateData_Peak_SpectMaxInt"
+    spectMaxInt = iglearner.generateMaxIntentityFile(file_name3)
+        
+    ionLists = iglearner.generateIonGroup_Int(subspects, orginalpois, spectMaxInt)
+        
+        
+    file_name4 = "SubSpectrumData/"+"IonGroups_SimulateData_Peak_Int"
+    wfile = write_file()
+    wfile.writeIonGroups(ionLists, file_name4)
+    
+    end = time.clock()
+    print 'time consuming %s seconds.' % (end-start)
         

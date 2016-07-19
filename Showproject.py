@@ -29,6 +29,7 @@ from SubSpectrumProcessor import SubSpectrumProcessor
 from SubSpectrumGenerator import SubSpectrumGenerator
 from SpectrumParser import SpectrumParser
 from PeptideProcessor import PeptideProcessor
+from IonGroupLearner import IonGroupLearner
 import os
 fw = write_file()
 class showproject(object):
@@ -46,7 +47,7 @@ class showproject(object):
         self.root.config(menu=self.menu)
         
         # drawpiture
-        self.dw_f = Figure(figsize=(5,4), dpi=100) #create canvas
+        self.dw_f = Figure(figsize=(5,4), dpi=80) #create canvas
         self.dw_canvas = FigureCanvasTkAgg(self.dw_f, master=self.root)
         self.dw_canvas.get_tk_widget().grid(row=0, columnspan=5)
         
@@ -66,7 +67,11 @@ class showproject(object):
         test_menu.add_command(label="Test 5", command=self.Test5)
         test_menu.add_command(label="Test 6", command=self.Test6)
         test_menu.add_command(label="Test 7", command=self.Test7)
-#        test_menu.add_command(label="Test 8", command=self.Test8)
+        test_menu.add_command(label="Test 8", command=self.Test8)
+        test_menu.add_command(label="Test 9", command=self.Test9)
+#        test_menu.add_command(label="Test 10", command=self.Test10)
+#        test_menu.add_command(label="Test 11", command=self.Test11)
+#        test_menu.add_command(label="Test 12", command=self.Test12)
         self.menu.add_cascade(label="Test", menu=test_menu)
     
     ########################################### Graph ###################################
@@ -261,6 +266,65 @@ class showproject(object):
         
         self.t7_Fnbutton.grid(row=2, column=2)
         self.t7_Actbutton.grid(row=2, column=3)   
+
+    def Test8(self):
+        self.rebuildroot()
+        print "Test8"
+        tk.Label(self.root, text="-"*40+"   Test 8  Specical subspectrum  "+"-"*40)\
+                .grid(row=1, column=0, columnspan=5)
+        
+        self.t8_Fnbutton = tk.Button(self.root, text="spectrumFile", command=self.t8_loadFile)
+        self.t8_Actbutton = tk.Button(self.root, text="action",command=self.t8_action) 
+        
+        self.stype = tk.StringVar()
+        self.stype.set("dual")
+        self.t8_dualRatio = tk.Radiobutton(self.root, variable = self.stype, value = "dual", text = "dual")
+        self.t8_atypeRatio = tk.Radiobutton(self.root, variable = self.stype, value = "atype", text = "atype")  
+        self.t8_yNH3Ratio = tk.Radiobutton(self.root, variable = self.stype, value = "yNH3", text = "yNH3")
+        self.t8_yH2ORatio = tk.Radiobutton(self.root, variable = self.stype, value = "yH2O", text = "yH2O")  
+        self.t8_bH2ORatio = tk.Radiobutton(self.root, variable = self.stype, value = "bH2O", text = "bH2O")
+        self.t8_bNH3Ratio = tk.Radiobutton(self.root, variable = self.stype, value = "bNH3", text = "bNH3")  
+        self.t8_y46_Ratio = tk.Radiobutton(self.root, variable = self.stype, value = "y46-", text = "y46-")
+        self.t8_y45_Ratio = tk.Radiobutton(self.root, variable = self.stype, value = "y45-", text = "y45-")  
+        self.t8_y10_Ratio = tk.Radiobutton(self.root, variable = self.stype, value = "y10+", text = "y10+")  
+        tk.Label(self.root, text="binlen :").grid(row=6, column=0)
+        tk.Label(self.root, text="arealen :").grid(row=6, column=2)
+        self.t8_BlEntry = tk.Entry(self.root) 
+        self.t8_AlEntry = tk.Entry(self.root) 
+  
+        self.t8_Fnbutton.grid(row=2, column=2)
+        self.t8_dualRatio.grid(row=3, column=1)
+        self.t8_atypeRatio.grid(row=3, column=2)
+        self.t8_yNH3Ratio.grid(row=3, column=3)
+        self.t8_yH2ORatio.grid(row=4, column=1)
+        self.t8_bH2ORatio.grid(row=4, column=2)
+        self.t8_bNH3Ratio.grid(row=4, column=3)
+        self.t8_y46_Ratio.grid(row=5, column=1)
+        self.t8_y45_Ratio.grid(row=5, column=2)
+        self.t8_y10_Ratio.grid(row=5, column=3)
+        self.t8_BlEntry.grid(row=6, column=1)
+        self.t8_AlEntry.grid(row=6, column=3)  
+        self.t8_Actbutton.grid(row=6, column=4)  
+     
+
+    def Test9(self):
+        self.rebuildroot()
+        print "Test9"
+        tk.Label(self.root, text="-"*40+"   Test 9  Ion groups  "+"-"*40)\
+                .grid(row=1, column=0, columnspan=5)
+        
+        tk.Label(self.root, text="SpectrumMaxIntentity：").grid(row=2, column=1)
+        self.t9_SMFnbutton = tk.Button(self.root, text="spectraFile", command=self.t9_loadSMFile)
+        self.t9_SMActbutton = tk.Button(self.root, text="action",command=self.t9_smaction) 
+        
+        tk.Label(self.root, text="SubspectrumFile(Intentiey)：").grid(row=3, column=1)
+        self.t9_Fnbutton = tk.Button(self.root, text="subspectrumFile", command=self.t9_loadFile)   
+        self.t9_Actbutton = tk.Button(self.root, text="action",command=self.t9_action) 
+        
+        self.t9_SMFnbutton.grid(row=2, column=2)
+        self.t9_SMActbutton.grid(row=2, column=3) 
+        self.t9_Fnbutton.grid(row=3, column=2)
+        self.t9_Actbutton.grid(row=3, column=3) 
 
 
     
@@ -499,13 +563,13 @@ class showproject(object):
         ionapChiValues = subprocessor.ChiSquared_TypeandAminoPairs(subspects,orginalpois)
         print ionapChiValues
         
+        print self.t4_filename
+        print self.t4_noifilename
         # store orginalpois
         fw.writeIonPoi(orginalpois,self.t4_filename)
         
         subprocessor.paintSubSpects(ionapChiValues)
         
-        print self.t4_filename
-        print self.t4_noifilename
     ################################## Test 5 #########################
     def t5_loadFile(self):
         """
@@ -546,23 +610,28 @@ class showproject(object):
             print "please choose file"
             return
         
-        subprocessor = SubSpectrumProcessor()
+        peppro = PeptideProcessor()
         if(not hasattr(self,'orginalpois')):
             filename = self.t6_filename+"_IonPostion" 
             if not os.path.exists(filename):
                 print "please operate Test4 Frist"
                 return 
-            self.orginalpois = subprocessor.generateIonPoitionFile(filename)
+            self.orginalpois = peppro.generateIonPoitionFile(filename)
+        
+        print self.orginalpois
+        
+        subprocessor = SubSpectrumProcessor()
 
         subparser = SubSpectrumGenerator()
         subspects = list(subparser.generateSubSpecfile(self.t6_filename))
         
-        ionpbptables = subprocessor.generateIonPepbondpoiTable(subspects,self.orginalpois,self.splitflag)
-        ionpbpchiValues = subprocessor.ChiSquared_TypeandPepbondPoi(subspects,self.orginalpois,self.splitflag)
+        ionpbptables = subprocessor.generateIonPepbondpoiTable(subspects,self.orginalpois,self.splitflag.get())
+        ionpbpchiValues = subprocessor.ChiSquared_TypeandPepbondPoi(subspects,self.orginalpois,self.splitflag.get())
         subprocessor.paintionpbpTable(ionpbptables)
-        subprocessor.paintionpbpTable(ionpbpchiValues)
+        subprocessor.paintChiValues(ionpbpchiValues)
 #        print pepLendf     
         print self.t6_filename
+        print self.splitflag.get()
     
     ################################## Test 7 #########################
     def t7_loadFile(self):
@@ -580,21 +649,129 @@ class showproject(object):
             print "please choose file"
             return
         
-        subprocessor = SubSpectrumProcessor()
+        ionLearner = IonGroupLearner()
         if(not hasattr(self,'orginalpois')):
             filename = self.t7_filename+"_IonPostion" 
             if not os.path.exists(filename):
                 print "please operate Test4 Frist"
                 return 
-            self.orginalpois = subprocessor.generateIonPoitionFile(filename)
+            self.orginalpois = ionLearner.generateIonPoitionFile(filename)
 
+        subprocessor = SubSpectrumProcessor()
         subparser = SubSpectrumGenerator()
         subspects = list(subparser.generateSubSpecfile(self.t7_filename))
         ionchiValues = subprocessor.ChiSquared_TypeandType(subspects,self.orginalpois)
         subprocessor.paintChiValues(ionchiValues)
    
         print self.t7_filename
+
+    ################################## Test 8 #########################
+    def t8_loadFile(self):
+        """
+        load the spectrum file
+        """
+        print "spectrumFile"
+        filename = tkFileDialog.askopenfilename()
+        filename = self.filenameparser(filename)
+        self.t8_filename = filename
+
+    def t8_action(self):
+        print "t8_action"
+        if(not hasattr(self,'t8_filename')):
+            print "please choose file" 
+            return
+        
+        try:
+            self.t8_binlen = float(self.t8_BlEntry.get())
+            self.t8_arealen = int(self.t8_AlEntry.get())
+        except:
+            print "input number"
+            return
+
+        fw.writeSpecialSubSepc(self.t8_filename, self.t8_binlen, self.t8_arealen, 'intensity', self.stype.get())
+   
+        print self.t8_filename
+        print self.stype.get()
+    ################################## Test 9 #########################
+    def t9_loadSMFile(self):
+        """
+        load the spectrum file
+        """
+        print "spectrumFile"
+        filename = tkFileDialog.askopenfilename()
+        filename = "data/" + self.filenameparser(filename)
+        orgin_file = self.filenameparser(filename)
+        self.t9_smfilename = filename
+        self.t9_orginfilename = orgin_file
+
+    def t9_smaction(self):
+        """
+          generate spectMaxInt File
+        """
+        print "t9_smaction"
+        if(not hasattr(self,'t9_smfilename')):
+            print "please choose file"
+            return
+        
+        iglearner = IonGroupLearner()
+        parser = SpectrumParser()
+        specs = list(parser.readSpectrum(self.t9_smfilename)) # orignal datas file    
+        spectMaxInt = iglearner.generateMaxIntentity(specs)
+        fw.writeSpectMaxInt(spectMaxInt, self.t9_orginfilename)
+        
+        print self.t9_smfilename
+        print self.t9_orginfilename
     
+    def t9_loadFile(self):
+        """
+        load the subspectrum file
+        """
+        print "subspectrumFile"
+        filename = tkFileDialog.askopenfilename()
+        filename = "SubSpectrumData/" + self.filenameparser(filename)
+        orgin_file = self.filenameparser(filename)
+        self.t9_filename = filename
+        self.t9_orginfilename = orgin_file
+    
+    def t9_action(self):
+        print "t9_action"
+        if(not hasattr(self,'t9_filename')):
+            print "please choose file"
+            return
+        
+        ionLearner = IonGroupLearner()
+        if(not hasattr(self,'spectMaxInt')):
+            print self.t9_orginfilename.split("_")[-2]
+            filename = "SubSpectrumData/"+self.t9_orginfilename.split("_")[0]+"_SpectMaxInt" 
+            if not os.path.exists(filename):
+                print "please operate spectMaxInt Frist"
+                return 
+            self.spectMaxInt = ionLearner.generateMaxIntentityFile(filename)
+        
+        if(not hasattr(self,'orginalpois')):
+            filename = "SubSpectrumData/"+self.t9_orginfilename.split("_")[0]+"_IonPostion" 
+            if not os.path.exists(filename):
+                print "please operate Test4 Frist"
+                return 
+            self.orginalpois = ionLearner.generateIonPoitionFile(filename)
+            
+        subparser = SubSpectrumGenerator()    
+        
+        if(self.t9_orginfilename.split("_")[-2]=='Noise'):
+            subspects = list(subparser.generateNoiSubfile(self.t9_filename,'intensity'))
+        else:
+            subspects = list(subparser.generateSubSpecfile(self.t9_filename,'intensity'))
+        ionLists = ionLearner.generateIonGroup_Int(subspects, self.orginalpois, self.spectMaxInt)
+        file_name = "SubSpectrumData/"+self.t9_orginfilename+"_iongroup"
+        fw.writeIonGroups(ionLists, file_name)
+        
+        print file_name
+        
+    ################################## Test 10 #########################        
+        
+        
+
+
     def filenameparser(self, filename):
         file_name = filename.split('/')[-1]
         return file_name

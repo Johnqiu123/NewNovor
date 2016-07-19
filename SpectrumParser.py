@@ -1,6 +1,7 @@
 from Spectrum import Spectrum
 from Peak import Peak
 import time
+from Paint_File import Paint_File 
 ''' parse spectrum file with mgf format.
    created on Jul 20, 2015.
 '''
@@ -12,7 +13,7 @@ class SpectrumParser(object):
       #  title = None
         is_parser = False
         with open(input_file) as input_data:
-            for line in input_data.readlines():
+            for line in input_data:
                 if len(line) == 0: continue
 #                if line.startswith('MASS'): continue
                 if line.startswith('BEGIN IONS'):
@@ -46,19 +47,40 @@ class SpectrumParser(object):
 
 if __name__ == '__main__':
     start = time.clock()
-#    file_name = 'data/SBQ_IP_HeLa818_100per_load.raw' #
-#    len(specs)=24694,time=69.08 seconds
-#    file_name = 'data/AGGP.mgf'
-    file_name = 'data/new_CHPP_LM3_RP3_2.mgf'
-#    len(specs) = 18051,time = 32.14 seconds
-    parser = SpectrumParser()
-    specs = list(parser.readSpectrum(file_name))
-    k = parser.readSpectrum(file_name)
-    print specs[0]
-    print k.next()
+##    file_name = 'data/SBQ_IP_HeLa818_100per_load.raw' #
+##    len(specs)=24694,time=69.08 seconds
+##    file_name = 'data/AGGP.mgf'
+#    file_name = 'data/new_CHPP_LM3_RP3_2.mgf'
+##    len(specs) = 18051,time = 32.14 seconds
+#    parser = SpectrumParser()
+#    specs = list(parser.readSpectrum(file_name))
+#    k = parser.readSpectrum(file_name)
+#    print specs[0]
+#    print k.next()
 #    end = time.clock()
 #    print len(specs)
 #    print 'time consuming %s seconds.' % (end-start)
+
+
+################################ Test 1#####################################
+    file_name = 'data/1_3M_JD_sample1_A.mgf'
+    parser = SpectrumParser()
+    specs = list(parser.readSpectrum(file_name))
+#    print specs[0].getPeaks()
+ 
+    xaix = []
+    yaix = []   
+    for peak in specs[0].getPeaks():
+        xaix.append(peak.getMz())
+        yaix.append(peak.getIntensity())
+
+    pt = Paint_File()
+    pt.paint(xaix,yaix)
+
+
+    end = time.clock()
+#    print len(specs)
+    print 'time consuming %s seconds.' % (end-start)
 
         
 

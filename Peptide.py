@@ -70,8 +70,12 @@ if __name__ == '__main__':
     pep = Peptide(acids)
     pepmass = pep.getPrefixMasses(True)
     listmass = pep.getMassList();
-    print listmass[-1]
+    s = ''
+    for acid in pep.getAcids():
+        s = s + acid.getResidue()
+    print listmass[1]
     print pep.getMass()
+    print s
     for mass in listmass:
         print mass
     for i in range(len(listmass)):

@@ -14,6 +14,7 @@ from scripts import ProteinWeightDict
 import itertools
 import pandas as pd
 from write_file import write_file
+from PeptideProcessor import PeptideProcessor
 
 aa_table = ProteinWeightDict()
 class SubSpectrumProcessor(object):
@@ -196,7 +197,8 @@ class SubSpectrumProcessor(object):
           
           Return:
            -ionpbptables    
-        """           
+        """
+        temp = 0           
         ionpbptables = {}
         for poi in pois:
             ionpbptable = {'L':(0,0),'M':(0,0),'R':(0,0)}
@@ -220,6 +222,7 @@ class SubSpectrumProcessor(object):
                     ionpbptable = self.updateionpbptable(ionpbptable, subspect, 'R', poi, num)
             ionpbpDF = pd.DataFrame(ionpbptable)       
             ionpbptables[poi] = ionpbpDF
+#            print ionpbptables
         return ionpbptables
 
     def updateionpbptable(self, ionpbptable, subspect, poiflag, poi, num):
@@ -378,7 +381,7 @@ class SubSpectrumProcessor(object):
           Return:
             -chiValues :  a list of chisquared value
         """
-        choicepois = [1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1] # by people
+        choicepois = [1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1] # by people need to change
         orgpois = [choicepois[i] and orginalpois[i] for i in range(len(orginalpois))]
         orgpois = filter((lambda x: x>0), orgpois)
         ionpbptables = self.generateIonPepbondpoiTable(subspects,orgpois, computeflag)
@@ -397,14 +400,14 @@ if __name__=='__main__':
 
     start = time.clock()
 ################################ Test 1#####################################
-    filename = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_20151208"
-    filename2 = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_Noise_20151208"
-    subparser = SubSpectrumGenerator()
-    subspects = list(subparser.generateSubSpecfile(filename))
-    noisubspects = list(subparser.generateNoiSubfile(filename2)) # noise
-#    
-    subprocessor = SubSpectrumProcessor()
-    allNtermbins,allCtermbins,allSubbins,subNum = subprocessor.calculateBins(subspects)
+#    filename = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_20151208"
+#    filename2 = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_Noise_20151208"
+#    subparser = SubSpectrumGenerator()
+#    subspects = list(subparser.generateSubSpecfile(filename))
+#    noisubspects = list(subparser.generateNoiSubfile(filename2)) # noise
+##    
+#    subprocessor = SubSpectrumProcessor()
+#    allNtermbins,allCtermbins,allSubbins,subNum = subprocessor.calculateBins(subspects)
 #    allNOiNtermbins,allNoiCtermbins,allNoibins,noiNum = subprocessor.calculateBins(noisubspects)
 ##     #n-term
 #    NchiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allNtermbins,allNOiNtermbins)
@@ -614,13 +617,13 @@ if __name__=='__main__':
 #    subprocessor.paintSubSpects(chiValues)
 
 ################################ Test 6#####################################
-    fw = write_file()
-    subparser = SubSpectrumGenerator()
-    filename = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_intensity_20160120"
-    filename2 = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_Noise_intensity_20160120"
-
-    subspect = subparser.generateSubSpecfile(filename,'intensity')
-    noisubspect = subparser.generateNoiSubfile(filename2,'intensity') # noise
+#    fw = write_file()
+#    subparser = SubSpectrumGenerator()
+#    filename = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_intensity_20160120"
+#    filename2 = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_Noise_intensity_20160120"
+#
+#    subspect = subparser.generateSubSpecfile(filename,'intensity')
+#    noisubspect = subparser.generateNoiSubfile(filename2,'intensity') # noise
     
 #    subspects = list(subparser.generateSubSpecfile(filename,'intensity'))
 #    noisubspects = list(subparser.generateNoiSubfile(filename2,'intensity')) # noise
@@ -660,5 +663,38 @@ if __name__=='__main__':
 #    subprocessor.paintSubSpects(chiValues)
 
     
+
+
+################################ Test 7 simulate data#####################################
+    
+#    filename = "SubSpectrumData/"+"SimulateData"
+#    orginFile = "SubSpectrumData/SimulateData_IonPostion"
+#    subprocessor = SubSpectrumProcessor()
+#
+#    subparser = SubSpectrumGenerator()
+#    subspects = list(subparser.generateSubSpecfile(filename))
+#    
+#    peppro = PeptideProcessor()   
+#    orginalpois = peppro.generateIonPoitionFile(orginFile)
+#    
+#    ionpbptables = subprocessor.generateIonPepbondpoiTable(subspects,orginalpois,'length')
+#    ionpbpchiValues = subprocessor.ChiSquared_TypeandPepbondPoi(subspects,orginalpois,'length')
+#    subprocessor.paintionpbpTable(ionpbptables)
+#    subprocessor.paintChiValues(ionpbpchiValues)
+
+################################ Test 7 simulate data#####################################
+    filename = "SubSpectrumData/"+"SimulateData"
+    orginFile = "SubSpectrumData/SimulateData_IonPostion"
+    subprocessor = SubSpectrumProcessor()
+
+    subparser = SubSpectrumGenerator()
+    subspects = list(subparser.generateSubSpecfile(filename))
+    
+    peppro = PeptideProcessor()   
+    orginalpois = peppro.generateIonPoitionFile(orginFile)    
+    
+    ionchiValues = subprocessor.ChiSquared_TypeandType(subspects,orginalpois)
+    subprocessor.paintChiValues(ionchiValues)
+
     end = time.clock()
     print 'time consuming %s seconds.' % (end-start)

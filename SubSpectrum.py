@@ -7,7 +7,7 @@ class SubSpectrum(Spectrum):
     ''' represents a subspectrum given a spectrum.
         created on Sep 22, 2015, by Johnqiu,mht
     '''
-    bin_length = 0.5
+    bin_length = 0.1
     bin_area = 50 
     def __init__(self, precursor_peak, title, pos,LA,RA):
         Spectrum.__init__(self,precursor_peak,title)
@@ -34,19 +34,36 @@ class SubSpectrum(Spectrum):
 
     def getBinLength(self):
         return SubSpectrum.bin_length
-    def setBinLength(length):
+    def setBinLength(self,length):
         bin_length = length
     def getBinArea(self):
         return SubSpectrum.bin_area
+    def setBinArea(self,area):
+        bin_area = area
 
+    # new code 15/12/27
+    def setLength(self, length): self.length = length
+    def getLength(self): return self.length
 if __name__ == '__main__':
     bins = [0] * int(50*2/0.5)
 #    print peak.getNumberofbins()
     
     import numpy as np
-    s = np.array([0,2])
-    s1 = np.array([1,1])
-    print s+s1
+    s=[]
+    s0 = np.array(s)
+    s1 = np.array([[2,5],[6,7]])
+    s3 = np.arange(-50,50,0.5)
+    
+    s4 = [x**2 for x in s1]
+#    print np.mat(s4)[:,0]
+    
+
+    x,y = 0,0
+    x,y = 3, 5-x
+    
+    str = "[ssssss]"
+
+    print str[1:len(str)-1]
     
 
 

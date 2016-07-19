@@ -57,6 +57,20 @@ def ProteinWeightDict():
 
 	return protein_weight_dict
 
+def IonTypeDict():
+    '''Returns a dict that represents ion types with its offset and
+    probability.
+       created on Jul 18, 2016 by qiu, and mht.
+    '''
+    table = {'b':(1,0.83),
+             'b-H2O':(-17,0.39),
+             'b-NH3':(-16,0.36),
+             'a':(-27,0.34),
+             'a-H2O':(-45,0.17),
+             'y':(0,0.87),
+             'y-NH3':(-17,0.24),}
+    return table
+        
 def IntegerProteinWeightDict():
 	'''Returns a dictionary that translates Protein to Monoisotopic Mass.'''
 	table ='''A   71
