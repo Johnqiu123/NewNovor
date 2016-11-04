@@ -30,6 +30,7 @@ from SubSpectrumGenerator import SubSpectrumGenerator
 from SpectrumParser import SpectrumParser
 from PeptideProcessor import PeptideProcessor
 from IonGroupLearner import IonGroupLearner
+from SpectrumProcessor import SpectrumProcessor
 import os
 fw = write_file()
 class showproject(object):
@@ -71,7 +72,8 @@ class showproject(object):
         test_menu.add_command(label="Test 9", command=self.Test9)
 #        test_menu.add_command(label="Test 10", command=self.Test10)
 #        test_menu.add_command(label="Test 11", command=self.Test11)
-#        test_menu.add_command(label="Test 12", command=self.Test12)
+        test_menu.add_command(label="Test 12", command=self.Test12)
+        test_menu.add_command(label="Test 13", command=self.Test13)
         self.menu.add_cascade(label="Test", menu=test_menu)
     
     ########################################### Graph ###################################
@@ -104,7 +106,7 @@ class showproject(object):
         tk.Label(self.root, text="arealen :").grid(row=2, column=2)
         tk.Label(self.root, text="flag :").grid(row=3, column=0)
 
-        self.t1_BlEntry = tk.Entry(self.root) 
+        
         self.t1_AlEntry = tk.Entry(self.root) 
         self.t1_FlagEntry = tk.Entry(self.root) 
         self.t1_Fnbutton = tk.Button(self.root, text="filename", command=self.t1_loadFile)
@@ -325,6 +327,24 @@ class showproject(object):
         self.t9_SMActbutton.grid(row=2, column=3) 
         self.t9_Fnbutton.grid(row=3, column=2)
         self.t9_Actbutton.grid(row=3, column=3) 
+    
+    def Test12(self):
+        self.rebuildroot()
+        print "Test12"
+        tk.Label(self.root, text="-"*40+"  Test 12 Spectrum Sample  "+"-"*40)\
+                   .grid(row=1, column=0, columnspan=5)
+        tk.Label(self.root, text="Window number:").grid(row=2, column=1)
+        tk.Label(self.root, text="Peak number:").grid(row=2, column=3)
+        
+        self.t12_WNEntry = tk.Entry(self.root) 
+        self.t12_PNEntry = tk.Entry(self.root) 
+        self.t12_SMFnbutton = tk.Button(self.root, text="dataFile", command=self.t12_loadSMFile)
+        self.t12_Actbutton = tk.Button(self.root, text="action", command=self.t12_action)
+       
+        self.t12_WNEntry.grid(row=2, column=2)
+        self.t12_PNEntry.grid(row=2, column=4)  
+        self.t12_SMFnbutton.grid(row=3,column=1)       
+        self.t12_Actbutton.grid(row=3, column=4)
 
 
     
@@ -345,7 +365,7 @@ class showproject(object):
         self.dw_canvas.get_tk_widget().grid(row=0, columnspan=5)
         
     ########################################### Method ###################################    
-    ################################## rewrite #########################
+    ################################## rewrite file #########################
     def rw_loadIPFile(self):
         """
         load the origin file
@@ -372,7 +392,7 @@ class showproject(object):
             if not mark:
                 print "please input again"
         
-    ################################## Test 1 #########################
+    ################################## Test 1 Generate SubSpectrum #########################
     def t1_loadFile(self):
         """
         load the subspectrum file
@@ -440,7 +460,7 @@ class showproject(object):
         else:
             print "please input again"
         
-    ################################## Test 2 #########################
+    ################################## Test 2  calculateBins #########################
     def t2_loadFile(self):
         """
         load the subspectrum file
@@ -473,7 +493,7 @@ class showproject(object):
         print self.pic.get()
         print self.t2_filename
         
-    ################################## Test 3 #########################
+    ################################## Test 3  TypeandBreakPoint #########################
     def t3_loadFile(self):
         """
         load the subspectrum file
@@ -523,7 +543,7 @@ class showproject(object):
         print self.t3_filename
         print self.t3_noifilename
     
-    ################################## Test 4 #########################
+    ################################## Test 4  TypeandAminoPairs #########################
     def t4_loadFile(self):
         """
         load the subspectrum file
@@ -559,7 +579,7 @@ class showproject(object):
 
         chiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allSubbins,allNoibins)
         poiChiValues,poichiV = subprocessor.sortChiValues(chiValues)
-        orginalpois = [poiChiValues[i][1] for i in range(len(poiChiValues))][0:21] # get top 10 chivalues
+        orginalpois = [poiChiValues[i][1] for i in range(len(poiChiValues))][0:21] # get top 21 chivalues
         ionapChiValues = subprocessor.ChiSquared_TypeandAminoPairs(subspects,orginalpois)
         print ionapChiValues
         
@@ -570,7 +590,7 @@ class showproject(object):
         
         subprocessor.paintSubSpects(ionapChiValues)
         
-    ################################## Test 5 #########################
+    ################################## Test 5  PepLenTable #########################
     def t5_loadFile(self):
         """
         load the orginal file
@@ -594,7 +614,7 @@ class showproject(object):
         peppro.paintPeplen(pepLendf)
 #        print pepLendf     
         print self.t5_filename
-    ################################## Test 6 #########################
+    ################################## Test 6  Pepbondpoi #########################
     def t6_loadFile(self):
         """
         load the subspectrum file
@@ -633,7 +653,7 @@ class showproject(object):
         print self.t6_filename
         print self.splitflag.get()
     
-    ################################## Test 7 #########################
+    ################################## Test 7  TypeandType #########################
     def t7_loadFile(self):
         """
         load the subspectrum file
@@ -665,7 +685,7 @@ class showproject(object):
    
         print self.t7_filename
 
-    ################################## Test 8 #########################
+    ################################## Test 8  Specical subspectrum #########################
     def t8_loadFile(self):
         """
         load the spectrum file
@@ -692,7 +712,7 @@ class showproject(object):
    
         print self.t8_filename
         print self.stype.get()
-    ################################## Test 9 #########################
+    ################################## Test 9  Ion groups #########################
     def t9_loadSMFile(self):
         """
         load the spectrum file
@@ -767,7 +787,43 @@ class showproject(object):
         
         print file_name
         
-    ################################## Test 10 #########################        
+    ################################## Test 10 Ionclassifying#########################         
+    ################################## Test 11 BYclassifying#########################    
+    ################################## Test 12 Spectrum Sample#########################
+    def t12_loadSMFile(self):
+        """
+        load the spectrum file
+        """
+        print "spectrumFile"
+        filename = tkFileDialog.askopenfilename()
+        filename = "data/" + self.filenameparser(filename)
+        orgin_file = self.filenameparser(filename)
+        self.t12_smfilename = filename
+        self.t12_orginfilename = orgin_file
+    
+    def t12_action(self):
+        print "t12_action"
+        if(not hasattr(self,'t12_orginfilename')):
+            print "please choose file"
+            return
+        
+        try:
+            self.t12_winnum = int(self.t12_WNEntry.get())
+            self.t12_peaknum = int(self.t12_PNEntry.get())
+        except:
+            print "input number"
+            return 
+        
+        parser = SpectrumParser()
+        spectprocer = SpectrumProcessor()
+        specs = parser.readSpectrum(self.t12_smfilename)   
+        sampleDict = spectprocer.preprocessing(specs,self.t12_winnum, self.t12_peaknum)
+        file_name = "data/"+ self.t12_orginfilename + "_sample"
+        spectprocer.writetoFile_cp(sampleDict,file_name)
+        print "spectrum sample finish"
+    ################################## Test 13 Use Model#########################
+    ################################## Test 14 Iontransforming#########################    
+    ################################## Test 15 Spectrum Graph#########################    
         
         
 

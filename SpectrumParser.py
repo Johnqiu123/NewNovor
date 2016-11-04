@@ -6,6 +6,7 @@ from Paint_File import Paint_File
    created on Jul 20, 2015.
 '''
 class SpectrumParser(object):
+    
     def readSpectrum(self,input_file):
         '''parses a spectrum file with mgf format.
            created on Aug 31, 2015 by mht.'''
@@ -43,7 +44,12 @@ class SpectrumParser(object):
                         spec.setPrecursor(Peak(pre_charge,pre_mass*pre_charge,1))
                            # spec.sortPeaks()                        
                         yield spec # return spec, replace return
-#        return None
+     
+    
+         
+             
+             
+               
 
 if __name__ == '__main__':
     start = time.clock()
@@ -60,29 +66,6 @@ if __name__ == '__main__':
 #    end = time.clock()
 #    print len(specs)
 #    print 'time consuming %s seconds.' % (end-start)
-
-
-################################ Test 1#####################################
-    file_name = 'data/1_3M_JD_sample1_A.mgf'
-    parser = SpectrumParser()
-    specs = list(parser.readSpectrum(file_name))
-#    print specs[0].getPeaks()
- 
-    xaix = []
-    yaix = []   
-    for peak in specs[0].getPeaks():
-        xaix.append(peak.getMz())
-        yaix.append(peak.getIntensity())
-
-    pt = Paint_File()
-    pt.paint(xaix,yaix)
-
-
-    end = time.clock()
-#    print len(specs)
-    print 'time consuming %s seconds.' % (end-start)
-
-        
 
     
 

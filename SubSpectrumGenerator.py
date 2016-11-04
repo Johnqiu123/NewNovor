@@ -110,50 +110,30 @@ class SubSpectrumGenerator(object):
                 dualsubspec.setCtermBins(cterm_bins)
                 yield dualsubspec
     
-    def generatePeakSubSpectra(self,spectra,bin_len=0.1, bin_area=50, flag = 'num'):
+    def generatePeakSubSpectra(self, spectra, sample, bin_len=0.1, bin_area=50, flag = 'num'):
         """
            get Spectal subSpectrum from peak.
            created on Sep 22, 2015 by Johnqiu.
-           
-           Args:
-           stype:   btype|dual|atype|yNH3|yH2O|bH2O|bNH3|y46-|y45-|y10+|y12+|aNH3|aH2O|y26+|y22+|b14-
+            
         """
         for spectrum in spectra:
-            pep = spectrum.getAnnotation() 
             title = spectrum.getTitle()
-            peaks = spectrum.getPeaks()
+            parentmass = spectrum.getParentMass()
+            peaks = sample[title]
             nterm_bins,cterm_bins = [],[]
             
             for peak in peaks:
                 nmass,cmass = 0,0
-                Btype = peak.getMass() -1
-                Ytype = pep.getMass()- peak.getMass() + 20-1 
-                Atype = peak.getMass()+27 
-                bfeature = {'btype':0 , 'NH3':17,'H20':18}
-                yfeature = {'ytype':0,'NH3':17,'H2O':18,'y46-':46,'y45-':45,'y10+':-10,'y12+':-12,'y26+':-26,'y22+':-22}
-                afeature = {'atype':0,'NH3':17,'H2O':18}
-                nmassList = []
-                for ion in {'b','y','a'}:
-                    if ion == 'b':
-                        for feat in bfeature:
-                            nmassList.append(Btype + bfeature[feat])
-                    elif ion == 'y':
-                        for feat in yfeature:
-                            nmassList.append(Ytype - yfeature[feat])
-                    elif ion == 'a':
-                        for feat in afeature:
-                            nmassList.append(Atype + afeature[feat])
-                for nmass in nmassList:            
-                    cmass =pep.getMass()-nmass
-                    LA = 'LA'
-                    RA = 'RA'
-                    nterm_bins = self.generateSubSpectrum(spectrum,nmass,bin_len,bin_area, flag) 
-                    cterm_bins = self.generateSubSpectrum(spectrum,cmass,bin_len,bin_area, flag)
-                    dualsubspec = SubSpectrum.SubSpectrum(spectrum.getPrecursorPeak(),title,1,LA,RA)           
-                    dualsubspec.setAnnotation(pep)
-                    dualsubspec.setNtermBins(nterm_bins)
-                    dualsubspec.setCtermBins(cterm_bins)
-                    yield dualsubspec
+                nmass = peak.getMass() -1
+                cmass = parentmass-nmass
+                LA = 'LA'
+                RA = 'RA'
+                nterm_bins = self.generateSubSpectrum(spectrum,nmass,bin_len,bin_area, flag) 
+                cterm_bins = self.generateSubSpectrum(spectrum,cmass,bin_len,bin_area, flag)
+                subspec = SubSpectrum.SubSpectrum(spectrum.getPrecursorPeak(),title,1,LA,RA)           
+                subspec.setNtermBins(nterm_bins)
+                subspec.setCtermBins(cterm_bins)
+                yield subspec
         
                 
     def generateSubSpectrum(self,spectrum,mass,bin_len,bin_area, flag='num'):

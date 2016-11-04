@@ -13,6 +13,19 @@ import os
   
 class write_file(object):
     
+    def writeSampleFile(self, spectra, filename):
+        output_file = "data/" + filename
+        with open(output_file,'w') as output_data:
+            for spec in spectra:
+                output_data.write('BEGIN IONS'+'\n')
+                output_data.write('TITLE='+spec.getTitle()+'\n')
+                output_data.write('PEPMASS='+str(spec.getPrecursorPeak().getMass())+'\n')
+                output_data.write('CHARGE='+str(spec.getCharge())+'+'+'\n')
+                for peak in spec.getPeaks():
+                    if peak.getIntensity() != 0:
+                        output_data.write(str(peak.getMz())+' '+str(peak.getIntensity())+'\n')
+                output_data.write('END IONS'+'\n')      
+    
     def rewriteFile(self, IPFile, PLFile, OUTFile):
        ## all peptide in simple.peplist
         IPFile = "data/" + IPFile

@@ -31,6 +31,7 @@ class Spectrum(object):
         '''returns the peptide mass of this spectrum: parentMass-mass(H2O).'''
         return (self.getPrecursorPeak().getMass() - Composition.H2O)
 
+    def setPeaks(self, peaks): self.peaks = peaks
     def setTitle(self,title): self.title = title
     def setPrecursor(self,peak): self.precursor_peak = peak
     def setAnnotation(self,peptide):

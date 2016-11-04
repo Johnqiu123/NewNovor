@@ -42,7 +42,6 @@ def generateSpectrum(peptide, ion_table,intensity = 100):
                 position = prefix_mass + float(ion_table[key][0])
             else: # C-term
                 position = all_mass + 20 - (prefix_mass + 1) + float(ion_table[key][0])
-            
             i += 1 
             prob = random.random()
             expect_prob = float(ion_table[key][1])
@@ -84,7 +83,7 @@ def WriteToFile(spectra, ion_table, filename):
                 pep_mass = pep_mass + aa_table[acid]
             output_data.write('BEGIN IONS'+'\n')
             output_data.write('TITLE='+filename+'_'+str(i)+'\n')
-            output_data.write('SEQ='+pep+'\n')
+#            output_data.write('SEQ='+pep+'\n')
             output_data.write('PEPMASS='+str(pep_mass)+'\n')
             output_data.write('CHARGE=' + '1+'+'\n')
             for poi,intensity in spectra[pep]:
@@ -93,5 +92,8 @@ def WriteToFile(spectra, ion_table, filename):
             i += 1
 
 if __name__=="__main__":
-    spectra = generateSpectra(ion_table, 7, 2000)
-    WriteToFile(spectra,ion_table,"SimulateData")
+#    spectra = generateSpectra(ion_table, 7, 2000)
+#    WriteToFile(spectra,ion_table,"SimulateData")
+#################################################test 1 paint data################################
+    spectra = generateSpectra(ion_table, 7, 1000)
+    WriteToFile(spectra,ion_table,"SimulateData_Test")
