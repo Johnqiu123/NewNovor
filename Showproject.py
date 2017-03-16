@@ -73,7 +73,7 @@ class showproject(object):
 #        test_menu.add_command(label="Test 10", command=self.Test10)
 #        test_menu.add_command(label="Test 11", command=self.Test11)
         test_menu.add_command(label="Test 12", command=self.Test12)
-        test_menu.add_command(label="Test 13", command=self.Test13)
+#        test_menu.add_command(label="Test 13", command=self.Test13)
         self.menu.add_cascade(label="Test", menu=test_menu)
     
     ########################################### Graph ###################################
@@ -107,6 +107,7 @@ class showproject(object):
         tk.Label(self.root, text="flag :").grid(row=3, column=0)
 
         
+        self.t1_BlEntry = tk.Entry(self.root)
         self.t1_AlEntry = tk.Entry(self.root) 
         self.t1_FlagEntry = tk.Entry(self.root) 
         self.t1_Fnbutton = tk.Button(self.root, text="filename", command=self.t1_loadFile)
@@ -263,7 +264,7 @@ class showproject(object):
         tk.Label(self.root, text="-"*40+"   Test 7  TypeandType  "+"-"*40)\
                 .grid(row=1, column=0, columnspan=5)
         
-        self.t7_Fnbutton = tk.Button(self.root, text="subspectrumFile", command=self.t7_loadFile)
+        self.t7_Fnbutton = tk.Button(self.root, text="subspectrumFile(01)", command=self.t7_loadFile)
         self.t7_Actbutton = tk.Button(self.root, text="action",command=self.t7_action) 
         
         self.t7_Fnbutton.grid(row=2, column=2)
@@ -391,6 +392,7 @@ class showproject(object):
             mark = fw.rewriteFile(self.rw_IPFile,self.rw_PLFile,self.rw_OUTFile)
             if not mark:
                 print "please input again"
+            print "rewrite file finish      "
         
     ################################## Test 1 Generate SubSpectrum #########################
     def t1_loadFile(self):
@@ -526,18 +528,24 @@ class showproject(object):
         allNtermbins,allCtermbins,allSubbins,subNum = subprocessor.calculateBins(subspects)
         allNOiNtermbins,allNoiCtermbins,allNoibins,noiNum = subprocessor.calculateBins(noisubspects)
         
+        chiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allSubbins,allNoibins)
+        poiChiValues,poichiV = subprocessor.sortChiValues(chiValues)
+        orginalpois = [poiChiValues[i][1] for i in range(len(poiChiValues))][0:21] # get top 21 chivalues
+        # store orginalpois        
+        fw.writeIonPoi(orginalpois,self.t3_filename)
+        
         #     #n-term
         if self.pic.get() == 0:
             NchiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allNtermbins,allNOiNtermbins)
-            subprocessor.paintSubSpects(NchiValues)
+            subprocessor.paintChiValues(NchiValues)
         elif self.pic.get() == 1:
             #c-term
             CchiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allCtermbins,allNoiCtermbins)
-            subprocessor.paintSubSpects(CchiValues)
+            subprocessor.paintChiValues(CchiValues)
         else:
-            #all
-            chiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allSubbins,allNoibins)
-            subprocessor.paintSubSpects(chiValues)
+            #all  
+            subprocessor.paintChiValues(chiValues)
+    
 
         print self.pic.get()
         print self.t3_filename
@@ -568,27 +576,27 @@ class showproject(object):
             print "please choose file"
             return
         
+        peppro = PeptideProcessor()
+        if(not hasattr(self,'orginalpois')):
+            filename = self.t4_filename+"_IonPostion" 
+            if not os.path.exists(filename):
+                print "please operate Test3 Frist"
+                return 
+            self.orginalpois = peppro.generateIonPoitionFile(filename)
+        
         subparser = SubSpectrumGenerator()
         subspects = list(subparser.generateSubSpecfile(self.t4_filename))
-        noisubspects = list(subparser.generateNoiSubfile(self.t4_noifilename))
         
         subprocessor = SubSpectrumProcessor()
-        allNtermbins,allCtermbins,allSubbins,subNum = subprocessor.calculateBins(subspects)
-        allNOiNtermbins,allNoiCtermbins,allNoibins,noiNum = subprocessor.calculateBins(noisubspects)
-        
-
-        chiValues = subprocessor.ChiSquared_TypeandBreakPoint(subNum,noiNum,allSubbins,allNoibins)
-        poiChiValues,poichiV = subprocessor.sortChiValues(chiValues)
-        orginalpois = [poiChiValues[i][1] for i in range(len(poiChiValues))][0:21] # get top 21 chivalues
-        ionapChiValues = subprocessor.ChiSquared_TypeandAminoPairs(subspects,orginalpois)
-        print ionapChiValues
+        ionapChiValues = subprocessor.ChiSquared_TypeandAminoPairs(subspects,self.orginalpois)
+        fileName = self.t4_filename + "_typeAPChi"
+        fw.writeFile_cp(fileName, ionapChiValues)
         
         print self.t4_filename
         print self.t4_noifilename
-        # store orginalpois
-        fw.writeIonPoi(orginalpois,self.t4_filename)
         
-        subprocessor.paintSubSpects(ionapChiValues)
+        
+#        subprocessor.paintSubSpects(ionapChiValues)
         
     ################################## Test 5  PepLenTable #########################
     def t5_loadFile(self):
@@ -634,7 +642,7 @@ class showproject(object):
         if(not hasattr(self,'orginalpois')):
             filename = self.t6_filename+"_IonPostion" 
             if not os.path.exists(filename):
-                print "please operate Test4 Frist"
+                print "please operate Test3 Frist"
                 return 
             self.orginalpois = peppro.generateIonPoitionFile(filename)
         
@@ -646,9 +654,9 @@ class showproject(object):
         subspects = list(subparser.generateSubSpecfile(self.t6_filename))
         
         ionpbptables = subprocessor.generateIonPepbondpoiTable(subspects,self.orginalpois,self.splitflag.get())
-        ionpbpchiValues = subprocessor.ChiSquared_TypeandPepbondPoi(subspects,self.orginalpois,self.splitflag.get())
+#        ionpbpchiValues = subprocessor.ChiSquared_TypeandPepbondPoi(subspects,self.orginalpois,self.splitflag.get())
         subprocessor.paintionpbpTable(ionpbptables)
-        subprocessor.paintChiValues(ionpbpchiValues)
+#        subprocessor.paintChiValues(ionpbpchiValues)
 #        print pepLendf     
         print self.t6_filename
         print self.splitflag.get()
@@ -673,7 +681,7 @@ class showproject(object):
         if(not hasattr(self,'orginalpois')):
             filename = self.t7_filename+"_IonPostion" 
             if not os.path.exists(filename):
-                print "please operate Test4 Frist"
+                print "please operate Test3 Frist"
                 return 
             self.orginalpois = ionLearner.generateIonPoitionFile(filename)
 
@@ -681,7 +689,9 @@ class showproject(object):
         subparser = SubSpectrumGenerator()
         subspects = list(subparser.generateSubSpecfile(self.t7_filename))
         ionchiValues = subprocessor.ChiSquared_TypeandType(subspects,self.orginalpois)
-        subprocessor.paintChiValues(ionchiValues)
+        fileName = self.t7_filename + "_typetypeChi"
+        fw.writeFile_cp(fileName, ionchiValues)
+#        subprocessor.paintChiValues(ionchiValues)
    
         print self.t7_filename
 
@@ -720,7 +730,7 @@ class showproject(object):
         print "spectrumFile"
         filename = tkFileDialog.askopenfilename()
         filename = "data/" + self.filenameparser(filename)
-        orgin_file = self.filenameparser(filename)
+        orgin_file = self.filenameparser(filename).split('.')[0]
         self.t9_smfilename = filename
         self.t9_orginfilename = orgin_file
 
@@ -735,7 +745,7 @@ class showproject(object):
         
         iglearner = IonGroupLearner()
         parser = SpectrumParser()
-        specs = list(parser.readSpectrum(self.t9_smfilename)) # orignal datas file    
+        specs = parser.readSpectrum(self.t9_smfilename)# orignal datas file    
         spectMaxInt = iglearner.generateMaxIntentity(specs)
         fw.writeSpectMaxInt(spectMaxInt, self.t9_orginfilename)
         
@@ -763,6 +773,7 @@ class showproject(object):
         if(not hasattr(self,'spectMaxInt')):
             print self.t9_orginfilename.split("_")[-2]
             filename = "SubSpectrumData/"+self.t9_orginfilename.split("_")[0]+"_SpectMaxInt" 
+            print filename
             if not os.path.exists(filename):
                 print "please operate spectMaxInt Frist"
                 return 
@@ -771,16 +782,16 @@ class showproject(object):
         if(not hasattr(self,'orginalpois')):
             filename = "SubSpectrumData/"+self.t9_orginfilename.split("_")[0]+"_IonPostion" 
             if not os.path.exists(filename):
-                print "please operate Test4 Frist"
+                print "please operate Test3 Frist"
                 return 
             self.orginalpois = ionLearner.generateIonPoitionFile(filename)
             
         subparser = SubSpectrumGenerator()    
         
         if(self.t9_orginfilename.split("_")[-2]=='Noise'):
-            subspects = list(subparser.generateNoiSubfile(self.t9_filename,'intensity'))
+            subspects = subparser.generateNoiSubfile(self.t9_filename,'intensity')
         else:
-            subspects = list(subparser.generateSubSpecfile(self.t9_filename,'intensity'))
+            subspects = subparser.generateSubSpecfile(self.t9_filename,'intensity')
         ionLists = ionLearner.generateIonGroup_Int(subspects, self.orginalpois, self.spectMaxInt)
         file_name = "SubSpectrumData/"+self.t9_orginfilename+"_iongroup"
         fw.writeIonGroups(ionLists, file_name)

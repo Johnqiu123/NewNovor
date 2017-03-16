@@ -84,6 +84,36 @@ class Classifying(object):
         print float(count0) / len(correct)
         return estimator
     
+   def paintDataset_split(self, *dataset):
+       colorset = np.linspace(0, 1, len(dataset))
+       print colorset
+       colors = plt.cm.Spectral(colorset)
+       reduced_datas = []
+       
+       for data in dataset:
+           redudata = PCA(n_components=2).fit_transform(data)
+           reduced_datas.append(redudata)
+           
+       plt.figure()
+       plt.clf()  # clear figure
+       
+       labels=['b','y','a','b-H2O','b-NH3','noise','y+10','y-45','y-46','y-H2O','y-NH3']
+#       mark=['k.','k.','go','w+','ro','k.','k.','k.','k.','k.','k.']
+
+
+       i = 0   
+       for redudata in reduced_datas:
+           plt.plot(redudata[:, 0], redudata[:, 1], 'go', color = colors[i], markersize=2, label= labels[i])
+           i += 1               
+       plt.title('PCA-reduced data')
+#       plt.grid(True)
+       plt.xlabel("X-Axis")
+       plt.ylabel("Y-Axis")
+       plt.xticks(())
+       plt.yticks(())
+       plt.legend()
+       plt.show()
+    
    def paintDataset(self, dataset, num, labelnum):
        # 数据集合并降维图      
        redudata = PCA(n_components=2).fit_transform(np.mat(dataset))
@@ -178,51 +208,51 @@ class Classifying(object):
 if __name__=='__main__':
     classifying = Classifying()
     
-    filename = "SubSpectrumData/"+"IonGroups_Int"
-    filename2 = "SubSpectrumData/"+"IonGroups_DualInt"
-    filename3 = "SubSpectrumData/"+"IonGroups_NoiInt"
-    filename4 = "SubSpectrumData/"+"IonGroups_AtypeInt"
-    filename5 = "SubSpectrumData/"+"IonGroups_yNH3Int"
-    filename6 = "SubSpectrumData/"+"IonGroups_yH2OInt"
-    filename7 = "SubSpectrumData/"+"IonGroups_bH2OInt"
-    filename8 = "SubSpectrumData/"+"IonGroups_bNH3Int"
-    filename9 = "SubSpectrumData/"+"IonGroups_y46-Int"
-    filename10 = "SubSpectrumData/"+"IonGroups_y45-Int"
-    filename11 = "SubSpectrumData/"+"IonGroups_y10+Int"
+#    filename = "SubSpectrumData/"+"IonGroups_Int"
+#    filename2 = "SubSpectrumData/"+"IonGroups_DualInt"
+#    filename3 = "SubSpectrumData/"+"IonGroups_NoiInt"
+#    filename4 = "SubSpectrumData/"+"IonGroups_AtypeInt"
+#    filename5 = "SubSpectrumData/"+"IonGroups_yNH3Int"
+#    filename6 = "SubSpectrumData/"+"IonGroups_yH2OInt"
+#    filename7 = "SubSpectrumData/"+"IonGroups_bH2OInt"
+#    filename8 = "SubSpectrumData/"+"IonGroups_bNH3Int"
+#    filename9 = "SubSpectrumData/"+"IonGroups_y46-Int"
+#    filename10 = "SubSpectrumData/"+"IonGroups_y45-Int"
+#    filename11 = "SubSpectrumData/"+"IonGroups_y10+Int"
     
 #################################################test 1#####################################
-    dataset = classifying.loadDataSet(filename)
-    dataset2 = classifying.loadDataSet(filename2)
-    dataset3 = classifying.loadDataSet(filename3)
-    dataset4 = classifying.loadDataSet(filename4)
-    dataset5 = classifying.loadDataSet(filename5)
-    dataset6 = classifying.loadDataSet(filename6)
-    dataset7 = classifying.loadDataSet(filename7)
-    dataset8 = classifying.loadDataSet(filename8)
-    dataset9 = classifying.loadDataSet(filename9)
-    dataset10 = classifying.loadDataSet(filename10)
-    dataset11 = classifying.loadDataSet(filename11)
-    
-    newData = classifying.randomSample(20000, dataset, dataset2, dataset3, dataset4,\
-                              dataset5, dataset6, dataset7, dataset8,\
-                              dataset9, dataset10, dataset11)
+#    dataset = classifying.loadDataSet(filename)
+#    dataset2 = classifying.loadDataSet(filename2)
+#    dataset3 = classifying.loadDataSet(filename3)
+#    dataset4 = classifying.loadDataSet(filename4)
+#    dataset5 = classifying.loadDataSet(filename5)
+#    dataset6 = classifying.loadDataSet(filename6)
+#    dataset7 = classifying.loadDataSet(filename7)
+#    dataset8 = classifying.loadDataSet(filename8)
+#    dataset9 = classifying.loadDataSet(filename9)
+#    dataset10 = classifying.loadDataSet(filename10)
+#    dataset11 = classifying.loadDataSet(filename11)
+#    
+#    newData = classifying.randomSample(20000, dataset, dataset2, dataset3, dataset4,\
+#                              dataset5, dataset6, dataset7, dataset8,\
+#                              dataset9, dataset10, dataset11)
 #    classifying.paintDataset(newData,20000,11)  
 #    classifying.paint3DDataset(newData,10000,11)       
-    labels = [] 
-    for i in range(2):
-        labels += [0] * 20000                          
-    for i in range(9):
-        labels += [1] * 20000 
-    
+#    labels = [] 
+#    for i in range(2):
+#        labels += [0] * 20000                          
+#    for i in range(9):
+#        labels += [1] * 20000 
+#    
 #    for i in range(11):
 #        labels += [i] * 20000
 
-    newD,newLabel = classifying.shuffleData(newData,labels)
-#    classifying.paintDataset(newD,20000,11) 
-    estimator = classifying.KnnClassifying(30,'distance','ball_tree')
-    newstimator = classifying.classifyingTest(estimator, newD,newLabel)
-    classifying.cpStoreClassifier("KnnClassifier",newstimator)
-#    classifying.paintResult(newD,labelreuslt,2) 
+#    newD,newLabel = classifying.shuffleData(newData,labels)
+##    classifying.paintDataset(newD,20000,11) 
+#    estimator = classifying.KnnClassifying(30,'distance','ball_tree')
+#    newstimator = classifying.classifyingTest(estimator, newD,newLabel)
+#    classifying.cpStoreClassifier("KnnClassifier",newstimator)
+##    classifying.paintResult(newD,labelreuslt,2) 
     
 #    hoRatio = 0.20      #hold out 10%
 #    m = newData.shape[0]
@@ -241,6 +271,74 @@ if __name__=='__main__':
 #    print errorCount        
     
 #################################################test 2 twolabel#####################################
+#    filename = "SubSpectrumData/"+"SimulateData_intensity_iongroup"
+#    filename2 = "SubSpectrumData/"+"SimulateData_dual_intensity_iongroup"
+#    filename3 = "SubSpectrumData/"+"SimulateData_atype_intensity_iongroup"
+#    filename4 = "SubSpectrumData/"+"SimulateData_bH2O_intensity_iongroup"
+#    filename5 = "SubSpectrumData/"+"SimulateData_bNH3_intensity_iongroup"
+#    filename6 = "SubSpectrumData/"+"SimulateData_Noise_intensity_iongroup"
+#    filename7 = "SubSpectrumData/"+"SimulateData_y10+_intensity_iongroup"
+#    filename8 = "SubSpectrumData/"+"SimulateData_y45-_intensity_iongroup"
+#    filename9 = "SubSpectrumData/"+"SimulateData_y46-_intensity_iongroup"
+#    filename10 = "SubSpectrumData/"+"SimulateData_yH2O_intensity_iongroup"
+#    filename11 = "SubSpectrumData/"+"SimulateData_yNH3_intensity_iongroup"
+#    
+#    dataset = classifying.loadDataSet(filename)
+#    dataset2 = classifying.loadDataSet(filename2)
+#    dataset3 = classifying.loadDataSet(filename3)
+#    dataset4 = classifying.loadDataSet(filename4)
+#    dataset5 = classifying.loadDataSet(filename5)
+#    dataset6 = classifying.loadDataSet(filename6)
+#    dataset7 = classifying.loadDataSet(filename7)
+#    dataset8 = classifying.loadDataSet(filename8)
+#    dataset9 = classifying.loadDataSet(filename9)
+#    dataset10 = classifying.loadDataSet(filename10)
+#    dataset11 = classifying.loadDataSet(filename11)
+#    
+#    newData = classifying.randomSample(10000, dataset, dataset2, dataset3, dataset4,\
+#                              dataset5, dataset6, dataset7, dataset8,\
+#                              dataset9, dataset10, dataset11)
+#    
+##    classifying.paintDataset(newData,10000,11)  
+#    classifying.paint3DDataset(newData,10000,11) 
+##    classifying.paintDataset_split(dataset, dataset2, dataset3, dataset4,\
+##                              dataset5, dataset6, dataset7, dataset8,\
+##                              dataset9, dataset10, dataset11) 
+#################################################test 2 twolabel#####################################
+    filename = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_intensity_iongroup"
+    filename2 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_dual_intensity_iongroup"
+    filename3 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_atype_intensity_iongroup"
+    filename4 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_bH2O_intensity_iongroup"
+    filename5 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_bNH3_intensity_iongroup"
+    filename6 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_Noise_intensity_iongroup"
+    filename7 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_y10+_intensity_iongroup"
+    filename8 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_y45-_intensity_iongroup"
+    filename9 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_y46-_intensity_iongroup"
+    filename10 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_yH2O_intensity_iongroup"
+    filename11 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_yNH3_intensity_iongroup"
     
     
     
+    
+    dataset = classifying.loadDataSet(filename)
+    dataset2 = classifying.loadDataSet(filename2)
+    dataset3 = classifying.loadDataSet(filename3)
+    dataset4 = classifying.loadDataSet(filename4)
+    dataset5 = classifying.loadDataSet(filename5)
+    dataset6 = classifying.loadDataSet(filename6)
+    dataset7 = classifying.loadDataSet(filename7)
+    dataset8 = classifying.loadDataSet(filename8)
+    dataset9 = classifying.loadDataSet(filename9)
+    dataset10 = classifying.loadDataSet(filename10)
+    dataset11 = classifying.loadDataSet(filename11)
+    
+#    newData = classifying.randomSample(40000, dataset, dataset2, dataset3, dataset4,\
+#                              dataset5, dataset6, dataset7, dataset8,\
+#                              dataset9, dataset10, dataset11)
+#    
+#    classifying.paintDataset(newData,10000,11)  
+#    classifying.paint3DDataset(newData,40000,11)   
+#    classifying.paintDataset_split(dataset, dataset2, dataset3, dataset4,\
+#                              dataset5, dataset6, dataset7, dataset8,\
+#                              dataset9, dataset10, dataset11)
+    classifying.paintDataset_split(dataset, dataset2, dataset3, dataset6 ) 

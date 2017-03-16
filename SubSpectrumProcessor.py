@@ -332,19 +332,20 @@ class SubSpectrumProcessor(object):
             -chiValues :  a list of chisquared value
         """
         choicepois = [1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1] # by people
+#        choicepois = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] # by people
         orgpois = [choicepois[i] and orginalpois[i] for i in range(len(orginalpois))]
         orgpois = filter((lambda x: x>0), orgpois)
         ionaptables = self.generateIonAminoPairsTable(subspects,orgpois)
 #        print ionaptables
         
-        chiValues = []  
+        chiValues = {}
         chi = ChiSquared()
         for key in ionaptables:
 #            print key         
             table = np.array([ionaptables[key].iloc[0],ionaptables[key].iloc[1]])
             chiValue = chi.OrgainChiSquard(table)
 #            print table
-            chiValues.append(chiValue)
+            chiValues[key] = chiValue 
         return chiValues
 
     def ChiSquared_TypeandType(self, subspects, orginalpois):
@@ -358,16 +359,20 @@ class SubSpectrumProcessor(object):
             -chiValues :  a list of chisquared value
         """
         choicepois = [1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1] # by people
+#        choicepois = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] # by people
         orgpois = [choicepois[i] and orginalpois[i] for i in range(len(orginalpois))]
         orgpois = filter((lambda x: x>0), orgpois)
         iontables = self.generateIonTable(subspects,orgpois)
+        fw = write_file()
+        filename = "SubSpectrumData/"+"typetype_iontable"
+        fw.writeFile_cp(filename, iontables)
         
-        chiValues = []  
+        chiValues = {} 
         chi = ChiSquared()
         for key in iontables:
             table = np.array(iontables[key].T)
             chiValue = chi.OrgainChiSquard(table)
-            chiValues.append(chiValue)
+            chiValues[key] = chiValue
         return chiValues
 
     def ChiSquared_TypeandPepbondPoi(self, subspects, orginalpois, computeflag='length'):
@@ -382,11 +387,12 @@ class SubSpectrumProcessor(object):
             -chiValues :  a list of chisquared value
         """
         choicepois = [1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1] # by people need to change
+#        choicepois = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] # by people
         orgpois = [choicepois[i] and orginalpois[i] for i in range(len(orginalpois))]
         orgpois = filter((lambda x: x>0), orgpois)
         ionpbptables = self.generateIonPepbondpoiTable(subspects,orgpois, computeflag)
 
-        
+        keyChiV = {}
         chiValues = []  
         chi = ChiSquared()
         for key in ionpbptables:
@@ -394,6 +400,11 @@ class SubSpectrumProcessor(object):
             table = np.array(ionpbptables[key].T)
             chiValue = chi.OrgainChiSquard(table)
             chiValues.append(chiValue)
+            keyChiV[key] = chiValue
+        fw = write_file()
+        filename = "SubSpectrumData/"+"pepbondpoi_Chivalue"
+        fw.writeFile_cp(filename, keyChiV)
+        
         return chiValues
 
 if __name__=='__main__':
@@ -683,18 +694,45 @@ if __name__=='__main__':
 #    subprocessor.paintChiValues(ionpbpchiValues)
 
 ################################ Test 7 simulate data#####################################
-    filename = "SubSpectrumData/"+"SimulateData"
-    orginFile = "SubSpectrumData/SimulateData_IonPostion"
-    subprocessor = SubSpectrumProcessor()
+#    filename = "SubSpectrumData/"+"SimulateData"
+#    orginFile = "SubSpectrumData/SimulateData_IonPostion"
+#    subprocessor = SubSpectrumProcessor()
+#
+#    subparser = SubSpectrumGenerator()
+#    subspects = list(subparser.generateSubSpecfile(filename))
+#    
+#    peppro = PeptideProcessor()   
+#    orginalpois = peppro.generateIonPoitionFile(orginFile)    
+#    
+#    ionchiValues = subprocessor.ChiSquared_TypeandType(subspects,orginalpois)
+#    subprocessor.paintChiValues(ionchiValues)
+#
+#    end = time.clock()
+#    print 'time consuming %s seconds.' % (end-start)
 
-    subparser = SubSpectrumGenerator()
-    subspects = list(subparser.generateSubSpecfile(filename))
-    
-    peppro = PeptideProcessor()   
-    orginalpois = peppro.generateIonPoitionFile(orginFile)    
-    
-    ionchiValues = subprocessor.ChiSquared_TypeandType(subspects,orginalpois)
-    subprocessor.paintChiValues(ionchiValues)
+################################ Test 7 simulate data#####################################
+#    filename = "SubSpectrumData/"+"SimulateData"
+##    filename2 = "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_Noise_20151208"
+#    subparser = SubSpectrumGenerator()
+#    subspects = list(subparser.generateSubSpecfile(filename))
+##    noisubspects = list(subparser.generateNoiSubfile(filename2)) # noise
+##    
+#    subprocessor = SubSpectrumProcessor()
+#    allNtermbins,allCtermbins,allSubbins,subNum = subprocessor.calculateBins(subspects)
+#    
+#    # write file
+#    File = "drawdata/" + "allNtermbins"
+#    with open(File,'w') as fr:
+#        for data in allNtermbins:
+#            fr.write(str(data)+'\n')
 
-    end = time.clock()
-    print 'time consuming %s seconds.' % (end-start)
+################################ Test 7 simulate data#####################################
+    filename = "SubSpectrumData/"+"typetype_iontable"
+#    fileChi =  "SubSpectrumData/"+"new_CHPP_LM3_RP3_2_typetypeChi"
+    fileChi =  "SubSpectrumData/"+"SimulateData_typeAPChi"
+    import cPickle as cpickle
+    with open(filename,'r') as fr:
+            table = cpickle.load(fr)
+    with open(fileChi,'r') as fc:
+            ChiVal = cpickle.load(fc)
+    

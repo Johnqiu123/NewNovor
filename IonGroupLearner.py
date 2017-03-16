@@ -32,6 +32,7 @@ class IonGroupLearner(object):
            -ionLists    
         """  
         choicepois = [1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1] # by people
+#        choicepois = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] # by people
         newpois = [choicepois[i] and pois[i] for i in range(len(pois))]
         newpois = filter((lambda x: x>0), newpois)
         
@@ -63,10 +64,9 @@ class IonGroupLearner(object):
            -ionLists    
         """  
         choicepois = [1,0,1,1,1,0,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1] # by people
+#        choicepois = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] # by people
         newpois = [choicepois[i] and pois[i] for i in range(len(pois))]
         newpois = filter((lambda x: x>0), newpois)
-        
-        print newpois
         
         ionLists = []
         for subspect in subspects:

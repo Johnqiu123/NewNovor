@@ -7,10 +7,16 @@ Created on Tue Nov 01 22:59:49 2016
 from sklearn.cross_validation import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
 from Adaboost import Adaboost
 import numpy as np
 import random
 from Paint_File import Paint_File 
+from sklearn.metrics import roc_curve, auc  
+import matplotlib.pyplot as plt 
+from sklearn.cross_validation import StratifiedKFold  
+from scipy import interp  
 class BYClassifying(object):
     
     def __init__(self, num):
@@ -67,7 +73,7 @@ class BYClassifying(object):
     
     def paint(self, datMat):
         sumData = np.sum(datMat, axis = 0)
-        xais = [i for i in range(len(sumData))]
+        xais = [i for i in range(1,len(sumData)+1)]
         pt = Paint_File()
         pt.paint(xais,sumData)
         pass
@@ -75,26 +81,111 @@ class BYClassifying(object):
 if __name__=='__main__':
     byclassifying = BYClassifying(100)
     
-    filename = "SubSpectrumData/"+"SimulateData_intensity_iongroup"
-    filename2 = "SubSpectrumData/"+"SimulateData_dual_intensity_iongroup"
+#    filename = "SubSpectrumData/"+"SimulateData_intensity_iongroup"
+#    filename2 = "SubSpectrumData/"+"SimulateData_dual_intensity_iongroup"
+#    fileion = "SubSpectrumData/"+"SimulateData_IonPostion"
     
-    dataset = byclassifying.loadDataSet(filename)
-    dataset2 = byclassifying.loadDataSet(filename2)
+#    filename = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_intensity_iongroup"
+#    filename2 = "SubSpectrumData/"+"new#CHPP#LM3#RP3#2_dual_intensity_iongroup"    
+#    
+#    
+#    dataset = byclassifying.loadDataSet(filename)
+#    dataset2 = byclassifying.loadDataSet(filename2)
+##    ionpoi = byclassifying.loadDataSet(fileion)
+#    
+#    alldata = byclassifying.mergeData(dataset,dataset2)
+#    
+#    labels = [] 
+#    for i in range(1):
+#        labels += [1] * 12000                          
+#    for i in range(1):
+#        labels += [-1] * 12000
+#    labels = np.array(labels)
     
-    alldata = byclassifying.mergeData(dataset,dataset2)
-    
-    labels = [] 
-    for i in range(1):
-        labels += [1] * 12000                          
-    for i in range(1):
-        labels += [-1] * 12000
-    labels = np.array(labels)
-    
-    data_train, data_test, label_train, label_test = byclassifying.splitData(alldata,labels)
+#    data_train, data_test, label_train, label_test = byclassifying.splitData(alldata,labels)
     
 #    efclassifier = byclassifying.extraForestsClassifying(data_train,label_train)
 #    efscore = efclassifier.score(data_test, label_test)
 
 #################################################test 1 paint data################################
-    byclassifying.paint(dataset)
-    byclassifying.paint(dataset2)
+#    byclassifying.paint(dataset)
+#    byclassifying.paint(dataset2)
+#    
+#    sumbion= np.sum(dataset,axis = 1)
+    
+#    sumbion= np.sum(dataset,axis = 0)
+#    sumyion= np.sum(dataset2,axis = 0)
+#    sumbtuple = [(i+1,sumbion[i]) for i in range(len(sumbion))]
+#    sumytuple = [(i+1,sumyion[i]) for i in range(len(sumyion))]
+#    sumbtuple = sorted(sumbtuple, key = lambda x:x[1], reverse= True)
+#    sumytuple = sorted(sumytuple, key = lambda x:x[1], reverse= True)
+    
+#################################################test 1 paint data################################    
+#    cv = StratifiedKFold(labels, n_folds=5)
+#    efclassifier = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
+#                                 algorithm="SAMME",
+#                                 n_estimators=50)
+#    mean_tpr = 0.0  
+#    mean_fpr = np.linspace(0, 1, 100)  
+#    all_tpr = []     
+#    for i, (train, test) in enumerate(cv):  
+#        # 预测
+#        probas_ = efclassifier.fit(alldata[train], labels[train]).predict_proba(alldata[test])
+#        #通过roc_curve()函数，求出fpr和tpr，以及阈值  
+#        fpr, tpr, thresholds = roc_curve(labels[test], probas_[:, 1])  
+#        probas_
+#        mean_tpr += interp(mean_fpr, fpr, tpr)          #对mean_tpr在mean_fpr处进行插值，通过scipy包调用interp()函数  
+#        mean_tpr[0] = 0.0                               #初始处为0  
+#        roc_auc = auc(fpr, tpr)  
+#        #画图，只需要plt.plot(fpr,tpr),变量roc_auc只是记录auc的值，通过auc()函数能计算出来  
+#        plt.plot(fpr, tpr, lw=1, label='ROC fold %d (area = %0.2f)' % (i, roc_auc))  
+#    #画对角线  
+#    plt.plot([0, 1], [0, 1], '--', color=(0.6, 0.6, 0.6), label='Luck')  
+#      
+#    mean_tpr /= len(cv)                     #在mean_fpr100个点，每个点处插值插值多次取平均  
+#    mean_tpr[-1] = 1.0                      #坐标最后一个点为（1,1）  
+#    mean_auc = auc(mean_fpr, mean_tpr)      #计算平均AUC值  
+#    #画平均ROC曲线  
+#    #print mean_fpr,len(mean_fpr)  
+#    #print mean_tpr  
+#    plt.plot(mean_fpr, mean_tpr, 'k--',  
+#             label='Mean ROC (area = %0.2f)' % mean_auc, lw=2)  
+#      
+#    plt.xlim([-0.05, 1.05])  
+#    plt.ylim([-0.05, 1.05])  
+#    plt.xlabel('False Positive Rate')  
+#    plt.ylabel('True Positive Rate')  
+#    plt.title('Adaboost ROC')   
+#    plt.legend(loc="lower right")  
+#    plt.show() 
+#    
+#################################################test 1 paint data################################
+#    est = [1,50,100,150,300]
+#    for i in est:    
+#        cv = StratifiedKFold(labels, n_folds=5)
+#        efclassifier = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
+#                                     algorithm="SAMME",
+#                                     n_estimators=50)
+#        mean_tpr = 0.0  
+#        mean_fpr = np.linspace(0, 1, 100)  
+#        all_tpr = []   
+#        trainScore = []
+#        testScore = []
+#        for i, (train, test) in enumerate(cv):  
+#            # 训练
+#            efmodel = efclassifier.fit(alldata[train], labels[train])
+#            trainS = efmodel.score(alldata[train], labels[train])
+#            testS = efmodel.score(alldata[test], labels[test])
+#            trainScore.append(trainS)
+#            testScore.append(testS)
+#        
+#        meanTrain = np.mean(trainScore)
+#        meanTest = np.mean(testScore)
+#        print 1-meanTrain
+#        print 1-meanTest
+    
+#################################################test 1 paint data################################
+    filename = "SubSpectrumData/"+"pepbondpoi_Chivalue"
+    import cPickle as cpickle
+    with open(filename,'r') as fr:
+            table = cpickle.load(fr)

@@ -34,16 +34,19 @@ class write_file(object):
         if not os.path.exists(IPFile) or not os.path.exists(PLFile):
             return False
         parser = SpectrumParser()
-        specs = list(parser.readSpectrum(IPFile))
+        specs = parser.readSpectrum(IPFile)
         
         with open(PLFile) as pep_file:
-            title_peptide = {line.strip().split(' ')[0]:line.strip().split(' ')[1] \
+           pep_file.next()
+           title_peptide = {line.strip().split('	')[1]:line.strip().split('	')[3] \
             for line in pep_file}
         # rewrite data
         with open(OUTFile,'w') as output_data:
+            i = 0   # set 
             for spec in specs:
-                title = spec.getTitle()
+                title = spec.getTitle()                
                 if title in title_peptide:
+                    if i >= 1000: break
                     output_data.write('BEGIN IONS'+'\n')
                     output_data.write('TITLE='+title+'\n')
                     output_data.write('SEQ='+title_peptide[title]+'\n')
@@ -52,7 +55,9 @@ class write_file(object):
                     for peak in spec.getPeaks():
                         if peak.getIntensity() != 0:
                             output_data.write(str(peak.getMz())+' '+str(peak.getIntensity())+'\n')
-                            output_data.write('END IONS'+'\n')
+                    output_data.write('END IONS'+'\n')
+                    i += 1
+
         return True
                           
     def writeSubSepc(self, File, binlen=0.1, arealen=50, flag = 'num'):
@@ -60,10 +65,9 @@ class write_file(object):
         file_name = "data/" + File
         fname = File.split('.')[0]
         parser = SpectrumParser()
-        specs = list(parser.readSpectrum(file_name))
-        print len(specs)
+        specs = parser.readSpectrum(file_name)
         subparser = SubSpectrumGenerator()
-        subspecs = list(subparser.generateSubSpectra(specs, binlen, arealen, flag))
+        subspecs = subparser.generateSubSpectra(specs, binlen, arealen, flag)
         if flag == 'num':
             filename = "SubSpectrumData/"+ fname
         elif flag == 'intensity':
@@ -91,9 +95,9 @@ class write_file(object):
         file_name = "data/" + File
         fname = File.split('.')[0]
         parser = SpectrumParser()
-        specs = list(parser.readSpectrum(file_name))
+        specs = parser.readSpectrum(file_name)
         subparser = SubSpectrumGenerator()
-        subspecs = list(subparser.generateSpecialSubSpectra(specs, binlen, arealen, flag, stype))
+        subspecs = subparser.generateSpecialSubSpectra(specs, binlen, arealen, flag, stype)
         if flag == 'num':
             filename = "SubSpectrumData/"+ fname +"_"+stype
         elif flag == 'intensity':
@@ -121,10 +125,9 @@ class write_file(object):
         file_name = "data/" + File
         fname = File.split('.')[0]
         parser = SpectrumParser()
-        specs = list(parser.readSpectrum(file_name))
-        print len(specs)
+        specs = parser.readSpectrum(file_name)
         subparser = SubSpectrumGenerator()
-        subspecs = list(subparser.generatePeakSubSpectra(specs, binlen, arealen, flag))
+        subspecs = subparser.generatePeakSubSpectra(specs, binlen, arealen, flag)
         if flag == 'num':
             filename = "SubSpectrumData/"+ fname + '_Peak'
         elif flag == 'intensity':
@@ -153,10 +156,9 @@ class write_file(object):
         file_name = "data/"+ File
         fname = File.split('.')[0]
         parser = SpectrumParser()
-        specs = list(parser.readSpectrum(file_name))
+        specs = parser.readSpectrum(file_name)
         noisesubparser = SubSpectrumGenerator()
-        noisesubspecs = list(noisesubparser.generateNoiseSubSpectra(specs, num, binlen, arealen, flag))
-        print(len(noisesubspecs))
+        noisesubspecs = noisesubparser.generateNoiseSubSpectra(specs, num, binlen, arealen, flag)
         if flag == 'num':
             filename = "SubSpectrumData/"+ fname + "_Noise"
         elif flag == 'intensity':
@@ -206,6 +208,10 @@ class write_file(object):
         filename = "SubSpectrumData/"+File+"_SpectMaxInt"
         with open(filename, 'w') as fw:
             cpickle.dump(spectMaxInt, fw)
+    
+    def writeFile_cp(self, filename, data):
+        with open(filename, 'w') as fw:
+            cpickle.dump(data, fw)
         
 
 if __name__ == '__main__':
@@ -216,9 +222,18 @@ if __name__ == '__main__':
 #    fw.writeNoiseSubSepc(8,0.1,50,'intensity')
 #    fw.writeNoiseSubSepc(8)
 #    fw.writeDualSubSepc(0.1, 50, 'intensity')
-    filename = 'new_CHPP_LM3_RP3_2.mgf'
-    fw.writePeakSubSepc(filename, 0.1, 50, 'intensity')
+#    filename = 'new_CHPP_LM3_RP3_2.mgf'
+#    fw.writePeakSubSepc(filename, 0.1, 50, 'intensity')
 #    fw.writeSpecialSubSepc(0.1, 50, 'intensity', 'y10+')
+
+########################################### Test ###################################
+    filename = 'data/JD_06232014_sample1_A.PepList'
+    with open(filename) as pep_file:
+        i = 0
+        pep_file.next()
+        title_peptide = {line.strip().split('	')[1]:line.strip().split('	')[3] \
+            for line in pep_file}
+    
     end = time.clock()
     print 'time consuming %s seconds.' % (end-start)
 

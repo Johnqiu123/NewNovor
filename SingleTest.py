@@ -110,6 +110,11 @@ class SingleTest(object):
                  subspect.setLength(length)  # new code 15/12/27
                  subspect.setAnnotation(pep)
                  yield subspect
+
+    def filenameparser(self, filename):
+        file_name = filename.split('/')[-1]
+        file_name = file_name.split('.')[0]
+        return file_name
                  
 if __name__=='__main__':
     
@@ -127,11 +132,15 @@ if __name__=='__main__':
 #    end = time.clock()
 #    print 'time consuming %s seconds.' % (end-start)
     
-    string = '[ 1 2 3 ]'
-    mystr = string[1:len(string)-1].strip().split(' ')
-    print mystr
-    k = np.array(map(float,mystr))
-#    k = np.array(mystr, dtype=int)
-    print k.shape
-    s = np.array(map(int, "100110"))
-    print s
+#    string = '[ 1 2 3 ]'
+#    mystr = string[1:len(string)-1].strip().split(' ')
+#    print mystr
+#    k = np.array(map(float,mystr))
+##    k = np.array(mystr, dtype=int)
+#    print k.shape
+#    s = np.array(map(int, "100110"))
+#    print s
+    
+    test = SingleTest()
+    filename = "data/new_CHPP_LM3_RP3_2.mgf"
+    file_name = test.filenameparser(filename)

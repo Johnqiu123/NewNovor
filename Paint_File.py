@@ -2,6 +2,8 @@
 """
 Created on Thu Oct 22 10:59:57 2015
 
+技巧:一条语句画不了，就用两条语句
+
 @author: Johnqiu
 """
 import matplotlib.pyplot as plt 
@@ -13,18 +15,33 @@ class Paint_File(object):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.vlines(xdata,[0],ydata) 
-        ax.set_xticks(xdata) # link with xdata
-#        plt.xlabel('m/z')
-#        plt.ylabel('Relative Counts')
+#        ax.set_xticks(xdata) # link with xdata
+        plt.xlabel('M/Z')
+#        plt.xlabel('Bins')
+#        plt.xlabel('PeptideLen')
+        
+#        plt.ylabel('0/1 Counts')
+#        plt.ylabel('Intensity Counts')
+#        plt.ylabel('Chi-square Value')
+#        plt.ylabel('Peptide Number')
+        plt.ylabel('Intensity')
+        plt.title('Spectrum')
         plt.show()
     
     def paintploylines(self, xdata, ydata):
         # paint ploylines
+#        ymean = np.mean(ydata)
+#        xmean = [i for i in range(9)]
+#        ymeans = [ymean for i in range(9)]
         fig = plt.figure()
         ax = fig.add_subplot(111)
+        ax.plot(xdata,ydata, 'ro')
+#        ax.plot(xmean,ymeans,'r--')
         ax.plot(xdata,ydata)
-#        plt.xlabel("position")
-#        plt.ylabel("ChiSquared")
+        ax.axis([0, 8, 0, 200])
+        plt.xlabel("Ion Type")
+        plt.ylabel("F value")
+        plt.title("F value Distribution")
         plt.show()
     
     def paintBar(self, xdata, ydata):
@@ -42,12 +59,18 @@ class Paint_File(object):
         width = 0.25
         i = -1
 #        xdata = np.array(xdata)
+        # color=plt.rcParams['axes.color_cycle'][i+1]
+        labels = ["left","center","right"]
+        patterns = ('/','-', '\\')
         newxdata = np.arange(1,len(xdata)+1)
         for ydata in ydatas:
-            ax.bar(newxdata + width * i, ydata, width, color=plt.rcParams['axes.color_cycle'][i+1])
+            ax.bar(newxdata + width * i,ydata, width, label= labels[i+1], color='white', edgecolor='black',hatch=patterns[i+1])
             i += 1
         ax.set_xticks(newxdata) # link with xdata
         ax.set_xticklabels(xdata)
+        plt.xlabel("ion position")
+        plt.ylabel("The number of occurrences")
+        plt.legend()
         plt.show()
     
     def paintmultiploylines(self, xdata, ydata, ydata2):
@@ -60,8 +83,29 @@ class Paint_File(object):
         ax2.set_xticks(xdata) 
         plt.show()       
         
-
-
+    def paintDoubleploylines(self, xdata, ydata, ydata2):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        a1, = ax.plot(xdata,ydata, 'go')
+        a2, = ax.plot(xdata,ydata2,'r^')
+        a11, = ax.plot(xdata,ydata)
+        a22, = ax.plot(xdata,ydata2)
+        plt.xlim(8,15)
+#        plt.ylim(0,3500,100)
+        plt.ylim(0,1000,100)
+        plt.xlabel("Peptide Length")
+        plt.ylabel("Vartex")
+#        plt.ylabel("Edge")
+        plt.title("Spectrum Graph")
+#        plt.legend()
+        plt.legend([(a1,a11),(a2,a22)],['Newnovo','Pepnovo'], loc =2)
+        
+#        z = np.random.randn(10)
+#        p1a, = plt.plot(z, "ro", ms=10, mfc="r", mew=2, mec="r") # red filled circle
+#        p1b, = plt.plot(z[:5], "w+", ms=10, mec="w", mew=2) # white cross
+#        plt.legend([p1a, (p1a, p1b)], ["Attr A", "Attr A+B"])
+#        plt.show()
+        
 if __name__ == '__main__':
     
     paint = Paint_File()
@@ -95,6 +139,25 @@ if __name__ == '__main__':
 #    print result
 #    x = np.arange(5)
 #    y1, y2, y3 = np.random.randint(1, 25, size=(3, 5))
-    print x,y1,y2,y3
+#    print x,y1,y2,y3
     paint.paintmultiBars(x,y1,y2,y3)
-    
+################################ Test 1#####################################
+#    xaix = [i for i in range(1,8)]
+##    yaix = [38.34,35.24,30.44,28.33,33.55,34.11,36.76]
+#    yaix = [38.34,35.24,30.44,28.33,157.33,34.11,36.76]
+#    xvar = np.mean(yaix)
+#    print xvar
+#    paint.paintploylines(xaix,yaix)
+################################ Test 1#####################################
+#    xaix = [i for i in range(8,16)]
+#    yaix=[88.2,99.45,110.34,124.22,149.33,158.33,173.44,200.56]
+#    yaix2 = [301.22, 320.2, 400.22, 510.32, 540.34, 645.21, 750.22, 950.44]
+##    print xvar
+#    paint.paintDoubleploylines(xaix,yaix,yaix2)
+
+################################ Test 2#####################################
+#    xaix = [i for i in range(8,16)]
+#    yaix=[500.1,750.22,1200.11,1250.34,1400.22,1350.22,1450.33,1500.56]
+#    yaix2 = [1300.22, 1500.32, 2050.22, 2300.32, 2220.34, 3100.21, 3000.22, 3400.44]
+##    print xvar
+#    paint.paintDoubleploylines(xaix,yaix,yaix2)

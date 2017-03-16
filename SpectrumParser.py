@@ -66,6 +66,20 @@ if __name__ == '__main__':
 #    end = time.clock()
 #    print len(specs)
 #    print 'time consuming %s seconds.' % (end-start)
-
+#################################################test 1#####################################
+    file_name = 'data/SimulateData'
+    parser = SpectrumParser()
+    specs = parser.readSpectrum(file_name)
+    spectrum = specs.next()
+    peaks = spectrum.getPeaks()
+    xais = []
+    yais = []
+    for peak in peaks:
+        xais.append(peak.getMz())
+        yais.append(peak.getIntensity())
+    pt = Paint_File()
+    pt.paint(xais,yais)
+    
+    
     
 
